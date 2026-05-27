@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f7f7]">
       <header className="sticky top-0 z-40 bg-black">
-        <div className="relative flex h-[108px] items-center justify-between px-8">
+        <div className="relative flex h-[80px] items-center justify-between px-8">
           <button
             onClick={() => setMenuOpen(true)}
             className="flex h-12 w-12 items-center justify-center text-white"
