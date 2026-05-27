@@ -47,7 +47,7 @@ export default function SearchModal({ open, setOpen }) {
               damping: 32,
               mass: 0.7,
             }}
-            className="absolute bottom-0 left-0 h-[80vh] w-full overflow-y-auto rounded-t-[2rem] bg-white px-6 py-5 shadow-2xl"
+            className="absolute bottom-0 left-0 h-[65vh] w-full overflow-y-auto rounded-t-[2rem] bg-white px-6 py-5 shadow-2xl"
           >
             <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-gray-300" />
 
