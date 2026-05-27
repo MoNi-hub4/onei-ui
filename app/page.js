@@ -30,7 +30,7 @@ export default function Home() {
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <h1 className="text-[30px] font-black leading-none tracking-tight">
               <span className="bg-gradient-to-r from-orange-200 via-pink-300 to-violet-500 bg-clip-text text-transparent">
-                MoNi
+                iMobile
               </span>
             </h1>
           </div>
