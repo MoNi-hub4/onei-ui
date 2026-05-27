@@ -20,7 +20,7 @@ const containerVariants = {
   hidden: {},
   show: {
     transition: {
-      delayChildren: 0.22,
+      delayChildren: 0.38,
       staggerChildren: 0.06,
     },
   },
@@ -49,7 +49,7 @@ export default function MenuDrawer({ open, setOpen }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
+            transition={{ duration: 0.18, delay: 0.08 }}
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
           />
@@ -72,12 +72,17 @@ export default function MenuDrawer({ open, setOpen }) {
               stiffness: 320,
               damping: 32,
               mass: 0.7,
+              delay: 0.08,
             }}
             className="absolute bottom-0 left-0 h-[65vh] w-full overflow-y-auto rounded-t-[2rem] bg-white px-6 py-5 shadow-2xl"
           >
             <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-gray-300" />
 
-            <motion.div variants={containerVariants} initial="hidden" animate="show">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+            >
               {menuData.map((menu, index) => (
                 <motion.div key={menu.title} variants={itemVariants}>
                   <button
@@ -90,7 +95,7 @@ export default function MenuDrawer({ open, setOpen }) {
 
                     <ChevronDown
                       size={20}
-                      className={`transition-transform duration-300 text-gray-400 ${
+                      className={`text-gray-400 transition-transform duration-300 ${
                         active === index ? "rotate-180" : ""
                       }`}
                     />

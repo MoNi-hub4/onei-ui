@@ -17,37 +17,40 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f7f7]">
       <header className="sticky top-0 z-40 bg-black">
-        <div className="relative flex h-[80px] items-center justify-between px-8">
+        <div className="relative flex h-[64px] items-center px-5">
+          {/* Left Menu */}
           <button
             onClick={() => setMenuOpen(true)}
-            className="flex h-12 w-12 items-center justify-center text-white"
+            className="flex h-10 w-10 items-center justify-center text-white"
           >
-            <Menu size={34} strokeWidth={1.7} />
+            <Menu size={24} strokeWidth={1.9} />
           </button>
 
-          <div className="absolute left-1/2 -translate-x-1/2">
-            <h1 className="text-[44px] font-black leading-none tracking-tight">
+          {/* Properly Centered Logo */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <h1 className="text-[30px] font-black leading-none tracking-tight">
               <span className="bg-gradient-to-r from-orange-200 via-pink-300 to-violet-500 bg-clip-text text-transparent">
                 MoNi
               </span>
             </h1>
           </div>
 
-          <div className="flex items-center gap-7 text-white">
+          {/* Right Actions */}
+          <div className="ml-auto flex items-center gap-2 text-white">
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex h-12 w-12 items-center justify-center"
+              className="flex h-10 w-10 items-center justify-center"
             >
-              <Search size={32} strokeWidth={1.8} />
+              <Search size={22} strokeWidth={1.9} />
             </button>
 
             <button
               onClick={() => setCartOpen(true)}
-              className="relative flex h-12 w-12 items-center justify-center"
+              className="relative flex h-10 w-10 items-center justify-center"
             >
-              <ShoppingBag size={31} strokeWidth={1.8} />
+              <ShoppingBag size={22} strokeWidth={1.9} />
 
-              <span className="absolute -right-2 -top-1 text-lg font-medium">
+              <span className="absolute -right-1 -top-1 text-[11px] font-medium">
                 3
               </span>
             </button>

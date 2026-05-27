@@ -23,7 +23,7 @@ export default function SearchModal({ open, setOpen }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
+            transition={{ duration: 0.18, delay: 0.08 }}
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
           />
@@ -46,12 +46,22 @@ export default function SearchModal({ open, setOpen }) {
               stiffness: 320,
               damping: 32,
               mass: 0.7,
+              delay: 0.08,
             }}
             className="absolute bottom-0 left-0 h-[65vh] w-full overflow-y-auto rounded-t-[2rem] bg-white px-6 py-5 shadow-2xl"
           >
             <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-gray-300" />
 
-            <div className="flex items-center gap-3 rounded-2xl bg-gray-100 px-4 py-4">
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: 0.2,
+                duration: 0.35,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="flex items-center gap-3 rounded-2xl bg-gray-100 px-4 py-4"
+            >
               <Search size={22} className="text-gray-500" />
 
               <input
@@ -66,12 +76,20 @@ export default function SearchModal({ open, setOpen }) {
                   <X size={22} className="text-gray-500" />
                 </button>
               )}
-            </div>
+            </motion.div>
 
             <div className="mt-8">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-gray-400">
+              <motion.h3
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.26,
+                  duration: 0.3,
+                }}
+                className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-gray-400"
+              >
                 Popular searches
-              </h3>
+              </motion.h3>
 
               <div className="space-y-3">
                 {popularSearches.map((item, index) => (
@@ -80,7 +98,7 @@ export default function SearchModal({ open, setOpen }) {
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{
-                      delay: 0.2 + index * 0.06,
+                      delay: 0.34 + index * 0.06,
                       duration: 0.35,
                       ease: [0.22, 1, 0.36, 1],
                     }}
