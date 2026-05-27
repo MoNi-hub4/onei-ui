@@ -4,20 +4,29 @@ import { ShoppingBag } from "lucide-react";
 
 export default function ProductCard({ product }) {
   return (
-    <div className="w-[280px] shrink-0">
+    <div className="w-[44vw] min-w-[175px] max-w-[210px] shrink-0">
       {/* IMAGE AREA */}
-      <div className="relative flex h-[280px] items-center justify-center overflow-hidden rounded-2xl bg-white">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="h-[72%] w-[72%] object-contain transition-transform duration-500 hover:scale-[1.03]"
-        />
+      <div className="relative flex aspect-[0.92] items-center justify-center overflow-hidden rounded-[28px] bg-white">
+        {/* FIXED IMAGE BOX */}
+        <div className="relative flex h-[72%] w-[72%] items-center justify-center">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="
+              absolute inset-0
+              h-full w-full
+              object-contain
+              transition-transform duration-500
+              hover:scale-[1.03]
+            "
+          />
+        </div>
 
         {/* MODERN ADD TO CART */}
         <button
           className="
-            absolute bottom-4 right-4
-            flex h-14 w-14 items-center justify-center
+            absolute bottom-3 right-3
+            flex h-11 w-11 items-center justify-center
             rounded-2xl
             border border-white/70
             bg-white/85
@@ -30,27 +39,27 @@ export default function ProductCard({ product }) {
             active:scale-95
           "
         >
-          <ShoppingBag size={20} strokeWidth={1.9} />
+          <ShoppingBag size={18} strokeWidth={1.9} />
         </button>
       </div>
 
       {/* TEXT AREA */}
-      <div className="px-2 pb-2 pt-5 text-center">
-        <h3 className="text-[22px] font-medium leading-none text-black">
+      <div className="px-1 pb-2 pt-4 text-center">
+        <h3 className="text-[17px] font-medium leading-tight text-black">
           {product.name}
         </h3>
 
-        <p className="mt-3 text-lg text-black">
-          <span className="text-sm text-gray-500">From</span>{" "}
+        <p className="mt-2 text-[15px] text-black">
+          <span className="text-[12px] text-gray-500">From</span>{" "}
           <span>{product.price}</span>
         </p>
 
-        <div className="mt-5 flex justify-center gap-2">
+        <div className="mt-4 flex justify-center gap-2">
           {product.colors.map((color, index) => (
             <button
               key={index}
               className="
-                flex h-8 w-8 items-center justify-center
+                flex h-7 w-7 items-center justify-center
                 rounded-lg border border-gray-200 bg-white
                 transition-all duration-300
                 hover:scale-105
@@ -60,7 +69,7 @@ export default function ProductCard({ product }) {
               <img
                 src={color}
                 alt=""
-                className="h-6 w-6 object-contain"
+                className="h-5 w-5 object-contain"
               />
             </button>
           ))}
