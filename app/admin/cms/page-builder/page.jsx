@@ -16,7 +16,7 @@ import {
 
 import VideoModule from "@/components/widgets/VideoModule";
 import VideoModuleCmsEditor from "@/components/cms/widgets/VideoModuleCmsEditor";
-
+import { Package } from "lucide-react";
 import CategoryGridModule from "@/components/widgets/CategoryGridModule";
 import CategoryGridCmsEditor from "@/components/cms/widgets/CategoryGridCmsEditor";
 
@@ -108,16 +108,14 @@ export default function PageBuilder() {
   };
 
   const selectedWidgetData = widgets.find(
-    (widget) => widget.id === selectedWidget
+    (widget) => widget.id === selectedWidget,
   );
 
   const updateSelectedWidgetData = (newData) => {
     setWidgets(
       widgets.map((widget) =>
-        widget.id === selectedWidget
-          ? { ...widget, data: newData }
-          : widget
-      )
+        widget.id === selectedWidget ? { ...widget, data: newData } : widget,
+      ),
     );
   };
 
@@ -147,30 +145,18 @@ export default function PageBuilder() {
   };
 
   const deleteSelectedWidget = () => {
-    setWidgets(
-      widgets.filter((widget) => widget.id !== selectedWidget)
-    );
+    setWidgets(widgets.filter((widget) => widget.id !== selectedWidget));
 
     setSelectedWidget(null);
   };
 
   const renderPreviewWidget = (widget) => {
     if (widget.type === "video-module") {
-      return (
-        <VideoModule
-          key={widget.id}
-          data={widget.data}
-        />
-      );
+      return <VideoModule key={widget.id} data={widget.data} />;
     }
 
     if (widget.type === "category-grid") {
-      return (
-        <CategoryGridModule
-          key={widget.id}
-          data={widget.data}
-        />
-      );
+      return <CategoryGridModule key={widget.id} data={widget.data} />;
     }
 
     return null;
@@ -181,9 +167,7 @@ export default function PageBuilder() {
       return (
         <div className="p-5">
           <div className="mb-5">
-            <h2 className="font-semibold tracking-tight">
-              Available Widgets
-            </h2>
+            <h2 className="font-semibold tracking-tight">Available Widgets</h2>
 
             <p className="text-xs text-neutral-400 mt-1">
               Add reusable modules
@@ -199,9 +183,7 @@ export default function PageBuilder() {
             </div>
 
             <div>
-              <p className="text-sm font-semibold">
-                Video Module
-              </p>
+              <p className="text-sm font-semibold">Video Module</p>
 
               <p className="text-xs text-neutral-400 mt-0.5">
                 autoplay video banner
@@ -218,9 +200,7 @@ export default function PageBuilder() {
             </div>
 
             <div>
-              <p className="text-sm font-semibold">
-                Category Grid
-              </p>
+              <p className="text-sm font-semibold">Category Grid</p>
 
               <p className="text-xs text-neutral-400 mt-0.5">
                 scrollable category icons
@@ -259,9 +239,7 @@ export default function PageBuilder() {
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#f6f7f9]">
-        <p className="text-sm text-neutral-500">
-          Loading CMS...
-        </p>
+        <p className="text-sm text-neutral-500">Loading CMS...</p>
       </div>
     );
   }
@@ -270,13 +248,9 @@ export default function PageBuilder() {
     <div className="h-screen flex flex-col bg-[linear-gradient(180deg,#f8fafc_0%,#f1f3f6_100%)] text-neutral-900">
       <header className="h-16 bg-white/90 backdrop-blur-xl border-b border-black/5 flex items-center justify-between px-6 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
         <div>
-          <h1 className="font-bold text-lg tracking-tight">
-            Onei CMS
-          </h1>
+          <h1 className="font-bold text-lg tracking-tight">Onei CMS</h1>
 
-          <p className="text-xs text-neutral-400 -mt-0.5">
-            Homepage builder
-          </p>
+          <p className="text-xs text-neutral-400 -mt-0.5">Homepage builder</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -312,12 +286,17 @@ export default function PageBuilder() {
           </button>
 
           <button
-            onClick={() =>
-              window.open("/admin/cms/assets", "_blank")
-            }
+            onClick={() => window.open("/admin/cms/assets", "_blank")}
             className="h-10 px-4 rounded-2xl border border-black/5 bg-white hover:bg-neutral-50 transition flex items-center gap-2 shadow-sm"
           >
             Asset Manager
+          </button>
+          <button
+            onClick={() => window.open("/admin/cms/products", "_blank")}
+            className="h-10 px-4 rounded-2xl border border-black/5 bg-white hover:bg-neutral-50 transition flex items-center gap-2 shadow-sm"
+          >
+            <Package size={16} />
+            Products
           </button>
 
           <button
@@ -343,9 +322,7 @@ export default function PageBuilder() {
         <aside className="bg-white/90 backdrop-blur-xl rounded-[1.75rem] border border-black/5 shadow-sm p-5 overflow-y-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="font-semibold tracking-tight">
-                Homepage Layout
-              </h2>
+              <h2 className="font-semibold tracking-tight">Homepage Layout</h2>
 
               <p className="text-xs text-neutral-400 mt-1">
                 Drag handle to reorder widgets
@@ -362,9 +339,7 @@ export default function PageBuilder() {
 
           {widgets.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-black/10 bg-neutral-50 p-5 text-center">
-              <p className="text-sm text-neutral-400">
-                No widgets added yet.
-              </p>
+              <p className="text-sm text-neutral-400">No widgets added yet.</p>
             </div>
           ) : (
             <Reorder.Group
@@ -389,9 +364,7 @@ export default function PageBuilder() {
         <main className="overflow-y-auto">
           <div
             className={`mx-auto transition-all duration-300 ${
-              previewMode === "mobile"
-                ? "w-[414px]"
-                : "max-w-6xl w-full"
+              previewMode === "mobile" ? "w-[414px]" : "max-w-6xl w-full"
             }`}
           >
             <div
@@ -431,10 +404,7 @@ export default function PageBuilder() {
                   <div className="h-72 flex items-center justify-center">
                     <div className="text-center">
                       <div className="mx-auto w-12 h-12 rounded-2xl bg-neutral-100 flex items-center justify-center mb-3">
-                        <Plus
-                          size={18}
-                          className="text-neutral-400"
-                        />
+                        <Plus size={18} className="text-neutral-400" />
                       </div>
 
                       <p className="text-sm text-neutral-400">
@@ -443,9 +413,7 @@ export default function PageBuilder() {
                     </div>
                   </div>
                 ) : (
-                  widgets.map((widget) =>
-                    renderPreviewWidget(widget)
-                  )
+                  widgets.map((widget) => renderPreviewWidget(widget))
                 )}
               </div>
             </div>
@@ -530,9 +498,7 @@ function DraggableWidgetItem({
 
         <p
           className={`text-xs mt-0.5 ${
-            isSelected
-              ? "text-white/50"
-              : "text-neutral-400"
+            isSelected ? "text-white/50" : "text-neutral-400"
           }`}
         >
           {widgetDescription}
