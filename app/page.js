@@ -8,6 +8,9 @@ import CartModal from "@/components/CartModal";
 import VideoModule from "@/components/VideoModule";
 import CategoryGrid from "@/components/CategoryGrid";
 import ProductShowcase from "@/components/ProductShowcase";
+import CmsBottomClient from "@/components/cms/CmsBottomClient";
+export const dynamic = "force-dynamic";
+
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -61,6 +64,7 @@ export default function Home() {
       <VideoModule />
       <CategoryGrid />
       <ProductShowcase />
+      <CmsBottomClient />
 
       <MenuDrawer open={menuOpen} setOpen={setMenuOpen} />
       <SearchModal open={searchOpen} setOpen={setSearchOpen} />
