@@ -11,10 +11,14 @@ import {
   Monitor,
   Smartphone,
   GripVertical,
+  LayoutGrid,
 } from "lucide-react";
 
 import VideoModule from "@/components/widgets/VideoModule";
 import VideoModuleCmsEditor from "@/components/cms/widgets/VideoModuleCmsEditor";
+
+import CategoryGridModule from "@/components/widgets/CategoryGridModule";
+import CategoryGridCmsEditor from "@/components/cms/widgets/CategoryGridCmsEditor";
 
 const handleLogout = () => {
   document.cookie =
@@ -35,6 +39,7 @@ export default function PageBuilder() {
       try {
         const res = await fetch("/api/cms/page-builder");
         const data = await res.json();
+
         setWidgets(data.widgets || []);
       } catch (error) {
         console.error("Failed to load CMS page:", error);
@@ -62,15 +67,57 @@ export default function PageBuilder() {
     setSelectedWidget(newWidget.id);
   };
 
+  const addCategoryGrid = () => {
+    const newWidget = {
+      id: Date.now(),
+      type: "category-grid",
+      data: {
+        spacingTop: 0,
+        spacingBottom: 0,
+        categories: [
+          {
+            title: "Apple",
+            image: "/categories/apple.webp",
+          },
+          {
+            title: "Sounds",
+            image: "/categories/sounds.webp",
+          },
+          {
+            title: "Dyson",
+            image: "/categories/dyson.webp",
+          },
+          {
+            title: "Android",
+            image: "/categories/android.webp",
+          },
+          {
+            title: "Gaming",
+            image: "/categories/gaming.webp",
+          },
+          {
+            title: "Gadgets",
+            image: "/categories/gadgets.webp",
+          },
+        ],
+      },
+    };
+
+    setWidgets([...widgets, newWidget]);
+    setSelectedWidget(newWidget.id);
+  };
+
   const selectedWidgetData = widgets.find(
-    (widget) => widget.id === selectedWidget,
+    (widget) => widget.id === selectedWidget
   );
 
   const updateSelectedWidgetData = (newData) => {
     setWidgets(
       widgets.map((widget) =>
-        widget.id === selectedWidget ? { ...widget, data: newData } : widget,
-      ),
+        widget.id === selectedWidget
+          ? { ...widget, data: newData }
+          : widget
+      )
     );
   };
 
@@ -86,7 +133,9 @@ export default function PageBuilder() {
         body: JSON.stringify({ widgets }),
       });
 
-      if (!res.ok) throw new Error("Failed to save CMS layout");
+      if (!res.ok) {
+        throw new Error("Failed to save CMS layout");
+      }
 
       alert("CMS layout saved to MongoDB");
     } catch (error) {
@@ -98,14 +147,121 @@ export default function PageBuilder() {
   };
 
   const deleteSelectedWidget = () => {
-    setWidgets(widgets.filter((widget) => widget.id !== selectedWidget));
+    setWidgets(
+      widgets.filter((widget) => widget.id !== selectedWidget)
+    );
+
     setSelectedWidget(null);
+  };
+
+  const renderPreviewWidget = (widget) => {
+    if (widget.type === "video-module") {
+      return (
+        <VideoModule
+          key={widget.id}
+          data={widget.data}
+        />
+      );
+    }
+
+    if (widget.type === "category-grid") {
+      return (
+        <CategoryGridModule
+          key={widget.id}
+          data={widget.data}
+        />
+      );
+    }
+
+    return null;
+  };
+
+  const renderSettingsPanel = () => {
+    if (!selectedWidgetData) {
+      return (
+        <div className="p-5">
+          <div className="mb-5">
+            <h2 className="font-semibold tracking-tight">
+              Available Widgets
+            </h2>
+
+            <p className="text-xs text-neutral-400 mt-1">
+              Add reusable modules
+            </p>
+          </div>
+
+          <button
+            onClick={addVideoModule}
+            className="w-full p-4 rounded-2xl bg-[#f7f7f8] hover:bg-white hover:shadow-sm ring-1 ring-black/5 cursor-pointer flex items-center gap-3 text-left transition-all"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-white ring-1 ring-black/5 flex items-center justify-center">
+              <Image size={18} />
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold">
+                Video Module
+              </p>
+
+              <p className="text-xs text-neutral-400 mt-0.5">
+                autoplay video banner
+              </p>
+            </div>
+          </button>
+
+          <button
+            onClick={addCategoryGrid}
+            className="w-full p-4 rounded-2xl bg-[#f7f7f8] hover:bg-white hover:shadow-sm ring-1 ring-black/5 cursor-pointer flex items-center gap-3 text-left transition-all mt-3"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-white ring-1 ring-black/5 flex items-center justify-center">
+              <LayoutGrid size={18} />
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold">
+                Category Grid
+              </p>
+
+              <p className="text-xs text-neutral-400 mt-0.5">
+                scrollable category icons
+              </p>
+            </div>
+          </button>
+        </div>
+      );
+    }
+
+    if (selectedWidgetData.type === "video-module") {
+      return (
+        <VideoModuleCmsEditor
+          data={selectedWidgetData.data}
+          setData={updateSelectedWidgetData}
+          onDelete={deleteSelectedWidget}
+          onBack={() => setSelectedWidget(null)}
+        />
+      );
+    }
+
+    if (selectedWidgetData.type === "category-grid") {
+      return (
+        <CategoryGridCmsEditor
+          data={selectedWidgetData.data}
+          setData={updateSelectedWidgetData}
+          onDelete={deleteSelectedWidget}
+          onBack={() => setSelectedWidget(null)}
+        />
+      );
+    }
+
+    return null;
   };
 
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#f6f7f9]">
-        <p className="text-sm text-neutral-500">Loading CMS...</p>
+        <p className="text-sm text-neutral-500">
+          Loading CMS...
+        </p>
       </div>
     );
   }
@@ -114,8 +270,13 @@ export default function PageBuilder() {
     <div className="h-screen flex flex-col bg-[linear-gradient(180deg,#f8fafc_0%,#f1f3f6_100%)] text-neutral-900">
       <header className="h-16 bg-white/90 backdrop-blur-xl border-b border-black/5 flex items-center justify-between px-6 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
         <div>
-          <h1 className="font-bold text-lg tracking-tight">Onei CMS</h1>
-          <p className="text-xs text-neutral-400 -mt-0.5">Homepage builder</p>
+          <h1 className="font-bold text-lg tracking-tight">
+            Onei CMS
+          </h1>
+
+          <p className="text-xs text-neutral-400 -mt-0.5">
+            Homepage builder
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -151,6 +312,15 @@ export default function PageBuilder() {
           </button>
 
           <button
+            onClick={() =>
+              window.open("/admin/cms/assets", "_blank")
+            }
+            className="h-10 px-4 rounded-2xl border border-black/5 bg-white hover:bg-neutral-50 transition flex items-center gap-2 shadow-sm"
+          >
+            Asset Manager
+          </button>
+
+          <button
             onClick={handleSave}
             disabled={saving}
             className="h-10 px-5 rounded-2xl bg-black text-white flex items-center gap-2 disabled:opacity-50 shadow-lg shadow-black/10 hover:bg-neutral-800 transition"
@@ -173,7 +343,10 @@ export default function PageBuilder() {
         <aside className="bg-white/90 backdrop-blur-xl rounded-[1.75rem] border border-black/5 shadow-sm p-5 overflow-y-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="font-semibold tracking-tight">Homepage Layout</h2>
+              <h2 className="font-semibold tracking-tight">
+                Homepage Layout
+              </h2>
+
               <p className="text-xs text-neutral-400 mt-1">
                 Drag handle to reorder widgets
               </p>
@@ -189,7 +362,9 @@ export default function PageBuilder() {
 
           {widgets.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-black/10 bg-neutral-50 p-5 text-center">
-              <p className="text-sm text-neutral-400">No widgets added yet.</p>
+              <p className="text-sm text-neutral-400">
+                No widgets added yet.
+              </p>
             </div>
           ) : (
             <Reorder.Group
@@ -214,7 +389,9 @@ export default function PageBuilder() {
         <main className="overflow-y-auto">
           <div
             className={`mx-auto transition-all duration-300 ${
-              previewMode === "mobile" ? "w-[414px]" : "max-w-6xl w-full"
+              previewMode === "mobile"
+                ? "w-[414px]"
+                : "max-w-6xl w-full"
             }`}
           >
             <div
@@ -238,7 +415,8 @@ export default function PageBuilder() {
                 </div>
 
                 <span className="text-xs px-3 py-1.5 rounded-full bg-neutral-100 text-neutral-500">
-                  {widgets.length} widget{widgets.length === 1 ? "" : "s"}
+                  {widgets.length} widget
+                  {widgets.length === 1 ? "" : "s"}
                 </span>
               </div>
 
@@ -253,21 +431,21 @@ export default function PageBuilder() {
                   <div className="h-72 flex items-center justify-center">
                     <div className="text-center">
                       <div className="mx-auto w-12 h-12 rounded-2xl bg-neutral-100 flex items-center justify-center mb-3">
-                        <Plus size={18} className="text-neutral-400" />
+                        <Plus
+                          size={18}
+                          className="text-neutral-400"
+                        />
                       </div>
+
                       <p className="text-sm text-neutral-400">
-                        click + to add video module
+                        click + to add widget
                       </p>
                     </div>
                   </div>
                 ) : (
-                  widgets.map((widget) => {
-                    if (widget.type === "video-module") {
-                      return <VideoModule key={widget.id} data={widget.data} />;
-                    }
-
-                    return null;
-                  })
+                  widgets.map((widget) =>
+                    renderPreviewWidget(widget)
+                  )
                 )}
               </div>
             </div>
@@ -275,41 +453,7 @@ export default function PageBuilder() {
         </main>
 
         <aside className="bg-white/90 backdrop-blur-xl rounded-[1.75rem] border border-black/5 shadow-sm overflow-y-auto">
-          {!selectedWidgetData ? (
-            <div className="p-5">
-              <div className="mb-5">
-                <h2 className="font-semibold tracking-tight">
-                  Available Widgets
-                </h2>
-                <p className="text-xs text-neutral-400 mt-1">
-                  Add reusable modules
-                </p>
-              </div>
-
-              <button
-                onClick={addVideoModule}
-                className="w-full p-4 rounded-2xl bg-[#f7f7f8] hover:bg-white hover:shadow-sm ring-1 ring-black/5 cursor-pointer flex items-center gap-3 text-left transition-all"
-              >
-                <div className="w-10 h-10 rounded-2xl bg-white ring-1 ring-black/5 flex items-center justify-center">
-                  <Image size={18} />
-                </div>
-
-                <div>
-                  <p className="text-sm font-semibold">Video Module</p>
-                  <p className="text-xs text-neutral-400 mt-0.5">
-                    autoplay video banner
-                  </p>
-                </div>
-              </button>
-            </div>
-          ) : (
-            <VideoModuleCmsEditor
-              data={selectedWidgetData.data}
-              setData={updateSelectedWidgetData}
-              onDelete={deleteSelectedWidget}
-              onBack={() => setSelectedWidget(null)}
-            />
-          )}
+          {renderSettingsPanel()}
         </aside>
       </div>
     </div>
@@ -324,6 +468,20 @@ function DraggableWidgetItem({
 }) {
   const dragControls = useDragControls();
   const isSelected = selectedWidget === widget.id;
+
+  const widgetName =
+    widget.type === "video-module"
+      ? "Video Module"
+      : widget.type === "category-grid"
+        ? "Category Grid"
+        : "Unknown Widget";
+
+  const widgetDescription =
+    widget.type === "video-module"
+      ? "video widget"
+      : widget.type === "category-grid"
+        ? "category icons"
+        : widget.type;
 
   return (
     <Reorder.Item
@@ -366,14 +524,18 @@ function DraggableWidgetItem({
       </button>
 
       <div>
-        <p className="text-sm font-semibold">Video Module #{index + 1}</p>
+        <p className="text-sm font-semibold">
+          {widgetName} #{index + 1}
+        </p>
 
         <p
           className={`text-xs mt-0.5 ${
-            isSelected ? "text-white/50" : "text-neutral-400"
+            isSelected
+              ? "text-white/50"
+              : "text-neutral-400"
           }`}
         >
-          video widget
+          {widgetDescription}
         </p>
       </div>
     </Reorder.Item>

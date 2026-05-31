@@ -1,17 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import VideoModule from "@/components/widgets/VideoModule";
+import CategoryGridModule from "@/components/widgets/CategoryGridModule";
 
 export default function CmsBottomClient() {
   const [widgets, setWidgets] = useState([]);
 
   useEffect(() => {
     async function loadWidgets() {
-      const res = await fetch("/api/cms/page-builder");
-      const data = await res.json();
+      try {
+        const res = await fetch("/api/cms/page-builder");
 
-      setWidgets(data.widgets || []);
+        if (!res.ok) {
+          throw new Error("Failed to fetch CMS widgets");
+        }
+
+        const data = await res.json();
+
+        setWidgets(data.widgets || []);
+      } catch (error) {
+        console.error("CMS bottom render error:", error);
+      }
     }
 
     loadWidgets();
@@ -25,6 +36,15 @@ export default function CmsBottomClient() {
         if (widget.type === "video-module") {
           return (
             <VideoModule
+              key={widget.id}
+              data={widget.data}
+            />
+          );
+        }
+
+        if (widget.type === "category-grid") {
+          return (
+            <CategoryGridModule
               key={widget.id}
               data={widget.data}
             />
