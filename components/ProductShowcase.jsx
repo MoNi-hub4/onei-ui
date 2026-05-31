@@ -1,167 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import ProductCard from "./ProductCard";
-
-const tabs = ["iPhone", "MacBook", "Apple Watch", "iPad", "iMac"];
-
-const productsByTab = {
-  iPhone: [
-    {
-      name: "iPhone 17e",
-      price: "Rs 274,900.00",
-      image: "/products/iphone-17e.webp",
-      colors: [
-        "/products/iphone-17e.webp",
-        "/products/iphone-white.webp",
-        "/products/iphone-black.webp",
-      ],
-    },
-    {
-      name: "iPhone 16 Pro",
-      price: "Rs 399,900.00",
-      image: "/products/iphone-16-pro.webp",
-      colors: [
-        "/products/iphone-16-pro.webp",
-        "/products/iphone-white.webp",
-        "/products/iphone-black.webp",
-      ],
-    },
-    {
-      name: "iPhone 17e4",
-      price: "Rs 274,900.00",
-      image: "/products/iphone-17e.webp",
-      colors: [
-        "/products/iphone-17e.webp",
-        "/products/iphone-white.webp",
-        "/products/iphone-black.webp",
-      ],
-    },
-    {
-      name: "iPhone 17e3",
-      price: "Rs 274,900.00",
-      image: "/products/iphone-17e.webp",
-      colors: [
-        "/products/iphone-17e.webp",
-        "/products/iphone-white.webp",
-        "/products/iphone-black.webp",
-      ],
-    },
-    {
-      name: "iPhone 17e2",
-      price: "Rs 274,900.00",
-      image: "/products/iphone-17e.webp",
-      colors: [
-        "/products/iphone-17e.webp",
-        "/products/iphone-white.webp",
-        "/products/iphone-black.webp",
-      ],
-    },
-    {
-      name: "iPhone 17e1",
-      price: "Rs 274,900.00",
-      image: "/products/iphone-17e.webp",
-      colors: [
-        "/products/iphone-17e.webp",
-        "/products/iphone-white.webp",
-        "/products/iphone-black.webp",
-      ],
-    },
-  ],
-
-  MacBook: [
-    {
-      name: "MacBook Air M4",
-      price: "Rs 329,900.00",
-      image: "/products/macbook-air.webp",
-      colors: [
-        "/products/macbook-air.webp",
-        "/products/macbook-silver.webp",
-        "/products/macbook-midnight.webp",
-      ],
-    },
-    {
-      name: "MacBook Pro M4",
-      price: "Rs 629,900.00",
-      image: "/products/macbook-pro.webp",
-      colors: [
-        "/products/macbook-pro.webp",
-        "/products/macbook-silver.webp",
-        "/products/macbook-spaceblack.webp",
-      ],
-    },
-  ],
-
-  "Apple Watch": [
-    {
-      name: "Apple Watch Series 10",
-      price: "Rs 159,900.00",
-      image: "/products/apple-watch.webp",
-      colors: [
-        "/products/apple-watch.webp",
-        "/products/watch-black.webp",
-        "/products/watch-silver.webp",
-      ],
-    },
-    {
-      name: "Apple Watch Ultra 2",
-      price: "Rs 299,900.00",
-      image: "/products/apple-watch-ultra.webp",
-      colors: [
-        "/products/apple-watch-ultra.webp",
-        "/products/watch-black.webp",
-        "/products/watch-orange.webp",
-      ],
-    },
-  ],
-
-  iPad: [
-    {
-      name: "iPad Air",
-      price: "Rs 249,900.00",
-      image: "/products/ipad-air.webp",
-      colors: [
-        "/products/ipad-air.webp",
-        "/products/ipad-blue.webp",
-        "/products/ipad-purple.webp",
-      ],
-    },
-    {
-      name: "iPad Pro",
-      price: "Rs 419,900.00",
-      image: "/products/ipad-pro.webp",
-      colors: [
-        "/products/ipad-pro.webp",
-        "/products/ipad-silver.webp",
-        "/products/ipad-black.webp",
-      ],
-    },
-  ],
-
-  iMac: [
-    {
-      name: "iMac 24-inch",
-      price: "Rs 469,900.00",
-      image: "/products/imac.webp",
-      colors: [
-        "/products/imac.webp",
-        "/products/imac-blue.webp",
-        "/products/imac-green.webp",
-      ],
-    },
-    {
-      name: "iMac M4",
-      price: "Rs 529,900.00",
-      image: "/products/imac-m4.webp",
-      colors: [
-        "/products/imac-m4.webp",
-        "/products/imac-pink.webp",
-        "/products/imac-yellow.webp",
-      ],
-    },
-  ],
-};
 
 const containerVariants = {
   hidden: {
@@ -210,13 +52,110 @@ const cardVariants = {
   },
 };
 
+const getProductKey = (product) =>
+  product?.slug || product?._id || product?.id || product?.name;
+
+const getProductHref = (product) =>
+  `/products/${product?.slug || product?._id || product?.id}`;
+
+const mapProductForCard = (product) => ({
+  ...product,
+  colors:
+    product.variants
+      ?.map((variant) => variant.image)
+      .filter(Boolean) || [],
+});
+
 export default function ProductShowcase() {
-  const [activeTab, setActiveTab] = useState("iPhone");
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [products, setProducts] = useState([]);
+  const [tabs, setTabs] = useState([]);
+  const [activeTab, setActiveTab] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [openingProductId, setOpeningProductId] = useState(null);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadProducts() {
+      try {
+        const res = await fetch("/api/cms/products", {
+          cache: "no-store",
+        });
+
+        const data = await res.json();
+        const activeProducts = (data.products || []).filter(
+          (product) => product.isActive !== false
+        );
+
+        const productTypes = [
+          ...new Set(
+            activeProducts
+              .map((product) => product.productType)
+              .filter(Boolean)
+          ),
+        ];
+
+        if (!ignore) {
+          setProducts(activeProducts);
+          setTabs(productTypes);
+          setActiveTab((current) => current || productTypes[0] || "");
+        }
+      } catch (error) {
+        console.error("Failed to load products", error);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadProducts();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const visibleProducts = useMemo(() => {
+    return products.filter((product) => product.productType === activeTab);
+  }, [products, activeTab]);
+
+  const sectionTitle = useMemo(() => {
+    const firstProduct = products.find(Boolean);
+    return firstProduct?.category || "Products";
+  }, [products]);
+
+  const handleProductClick = (product) => {
+    const href = getProductHref(product);
+    const productId = getProductKey(product);
+
+    if (!href || href.includes("undefined")) return;
+
+    setOpeningProductId(productId);
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+
+    window.setTimeout(() => {
+      startTransition(() => {
+        router.push(href, { scroll: true });
+      });
+    }, 90);
+  };
+
+  if (!loading && !products.length) {
+    return null;
+  }
 
   return (
     <section className="bg-[#f7f7f7] px-4 py-8">
       <h2 className="mb-6 text-[32px] font-medium leading-none text-black">
-        Apple
+        {sectionTitle}
       </h2>
 
       {/* TABS */}
@@ -264,15 +203,40 @@ export default function ProductShowcase() {
             className="overflow-x-auto scroll-smooth scrollbar-hide"
           >
             <motion.div className="flex snap-x snap-mandatory gap-4">
-              {productsByTab[activeTab].map((product) => (
-                <motion.div
-                  key={product.name}
-                  variants={cardVariants}
-                  className="snap-start"
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              ))}
+              {visibleProducts.map((product) => {
+                const productId = getProductKey(product);
+                const isOpening = openingProductId === productId;
+
+                return (
+                  <motion.div
+                    key={productId}
+                    variants={cardVariants}
+                    animate={{
+                      scale: isOpening ? 1.06 : 1,
+                      y: isOpening ? -8 : 0,
+                      opacity: openingProductId && !isOpening ? 0.45 : 1,
+                      filter: openingProductId && !isOpening ? "blur(4px)" : "blur(0px)",
+                    }}
+                    transition={{
+                      duration: 0.22,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    whileHover={{ y: -6, scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => !isPending && handleProductClick(product)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && !isPending) {
+                        handleProductClick(product);
+                      }
+                    }}
+                    className="snap-start cursor-pointer rounded-[2rem]"
+                  >
+                    <ProductCard product={mapProductForCard(product)} />
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </motion.div>
         </AnimatePresence>

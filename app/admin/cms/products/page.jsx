@@ -665,7 +665,7 @@ export default function ProductManagerPage() {
               )}
             </div>
 
-            <div className="flex gap-5 overflow-x-auto pb-4">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
               {products.map((product) => {
                 const productId = getProductId(product);
                 const isDeleting = deletingProductId === productId;
@@ -673,7 +673,7 @@ export default function ProductManagerPage() {
                 return (
                   <div
                     key={productId}
-                    className="w-[260px] shrink-0 rounded-[2rem] border bg-white p-3 shadow-sm"
+                    className="min-w-0 overflow-hidden rounded-[2rem] border bg-white p-3 shadow-sm"
                   >
                     <div
                       onClick={() => setSelectedProduct(product)}
@@ -684,17 +684,19 @@ export default function ProductManagerPage() {
                           setSelectedProduct(product);
                         }
                       }}
-                      className="cursor-pointer text-left"
+                      className="w-full min-w-0 cursor-pointer overflow-hidden text-left"
                     >
-                      <ProductCard
-                        product={{
-                          ...product,
-                          colors:
-                            product.variants
-                              ?.map((variant) => variant.image)
-                              .filter(Boolean) || [],
-                        }}
-                      />
+                      <div className="w-full min-w-0 overflow-hidden">
+                        <ProductCard
+                          product={{
+                            ...product,
+                            colors:
+                              product.variants
+                                ?.map((variant) => variant.image)
+                                .filter(Boolean) || [],
+                          }}
+                        />
+                      </div>
                     </div>
 
                     <div className="mt-3 grid grid-cols-3 gap-2">
