@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import mongoose from "mongoose";
-import { ArrowLeft, CheckCircle2, ShieldCheck, Truck } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Truck } from "lucide-react";
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
 import ProductPageMotion from "./ProductPageMotion";
+import BackRevealButton from "./BackRevealButton";
 
 async function getProduct(slug) {
   await connectDB();
@@ -46,13 +46,7 @@ export default async function ProductDisplayPage({ params }) {
     <ProductPageMotion>
       <main className="min-h-screen bg-[#f7f7f7] px-4 py-5 text-black">
         <div className="mx-auto max-w-7xl">
-          <Link
-            href="/"
-            className="mb-5 inline-flex h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-medium shadow-sm ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:shadow-md"
-          >
-            <ArrowLeft size={16} />
-            Back to products
-          </Link>
+          <BackRevealButton />
 
           <section className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="overflow-hidden rounded-[2.25rem] bg-white p-4 shadow-sm ring-1 ring-black/5">

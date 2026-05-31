@@ -74,6 +74,7 @@ export default function ProductShowcase() {
   const [activeTab, setActiveTab] = useState("");
   const [loading, setLoading] = useState(true);
   const [openingProductId, setOpeningProductId] = useState(null);
+  const [reveal, setReveal] = useState(null);
 
   useEffect(() => {
     let ignore = false;
@@ -127,19 +128,27 @@ export default function ProductShowcase() {
     return firstProduct?.category || "Products";
   }, [products]);
 
-  const handleProductClick = (product) => {
+  const handleProductClick = (event, product) => {
     const href = getProductHref(product);
     const productId = getProductKey(product);
 
-    if (!href || href.includes("undefined")) return;
+    if (!href || href.includes("undefined") || isPending || reveal) return;
+
+    const rect = event.currentTarget.getBoundingClientRect();
 
     setOpeningProductId(productId);
+    setReveal({
+      x: rect.left,
+      y: rect.top,
+      width: rect.width,
+      height: rect.height,
+    });
 
     window.setTimeout(() => {
       startTransition(() => {
         router.push(href);
       });
-    }, 90);
+    }, 420);
   };
 
   if (!loading && !products.length) {
@@ -147,7 +156,7 @@ export default function ProductShowcase() {
   }
 
   return (
-    <section className="bg-[#f7f7f7] px-4 py-8">
+    <section className="relative bg-[#f7f7f7] px-4 py-8">
       <h2 className="mb-6 text-[32px] font-medium leading-none text-black">
         {sectionTitle}
       </h2>
@@ -206,26 +215,26 @@ export default function ProductShowcase() {
                     key={productId}
                     variants={cardVariants}
                     animate={{
-                      scale: isOpening ? 1.06 : 1,
+                      scale: isOpening ? 1.055 : 1,
                       y: isOpening ? -8 : 0,
-                      opacity: openingProductId && !isOpening ? 0.45 : 1,
+                      opacity: openingProductId && !isOpening ? 0.35 : 1,
                       filter:
                         openingProductId && !isOpening
-                          ? "blur(4px)"
+                          ? "blur(5px)"
                           : "blur(0px)",
                     }}
                     transition={{
-                      duration: 0.22,
+                      duration: 0.24,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    whileHover={{ y: -6, scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => !isPending && handleProductClick(product)}
+                    whileHover={!reveal ? { y: -6, scale: 1.02 } : {}}
+                    whileTap={!reveal ? { scale: 0.97 } : {}}
+                    onClick={(event) => handleProductClick(event, product)}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(event) => {
-                      if (event.key === "Enter" && !isPending) {
-                        handleProductClick(product);
+                      if (event.key === "Enter") {
+                        handleProductClick(event, product);
                       }
                     }}
                     className="snap-start cursor-pointer rounded-[2rem]"
@@ -238,6 +247,58 @@ export default function ProductShowcase() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <AnimatePresence>
+        {reveal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.16 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[9998] bg-black"
+            />
+
+            <motion.div
+              initial={{
+                left: reveal.x,
+                top: reveal.y,
+                width: reveal.width,
+                height: reveal.height,
+                borderRadius: 32,
+                opacity: 1,
+              }}
+              animate={{
+                left: 0,
+                top: 0,
+                width: "100vw",
+                height: "100vh",
+                borderRadius: 0,
+                opacity: 1,
+              }}
+              exit={{ opacity: 0 }}
+              transition={{
+                duration: 0.46,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="fixed z-[9999] overflow-hidden bg-white shadow-2xl"
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.24,
+                  delay: 0.12,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="flex h-full w-full items-center justify-center bg-[#f7f7f7]"
+              >
+                <div className="h-12 w-12 animate-spin rounded-full border-2 border-neutral-200 border-t-black" />
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
