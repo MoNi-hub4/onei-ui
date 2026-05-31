@@ -79,9 +79,21 @@ export default function ProductShowcase() {
 
     async function loadProducts() {
       try {
-        const res = await fetch("/api/cms/products");
+        const cached = sessionStorage.getItem("cms-products-cache");
 
+        if (cached) {
+          const parsed = JSON.parse(cached);
+
+          setProducts(parsed.products || []);
+          setTabs(parsed.tabs || []);
+          setActiveTab((current) => current || parsed.tabs?.[0] || "");
+          setLoading(false);
+          return;
+        }
+
+        const res = await fetch("/api/cms/products");
         const data = await res.json();
+
         const activeProducts = (data.products || []).filter(
           (product) => product.isActive !== false,
         );
@@ -94,17 +106,21 @@ export default function ProductShowcase() {
           ),
         ];
 
-        if (!ignore) {
-          setProducts(activeProducts);
-          setTabs(productTypes);
-          setActiveTab((current) => current || productTypes[0] || "");
-        }
+        sessionStorage.setItem(
+          "cms-products-cache",
+          JSON.stringify({
+            products: activeProducts,
+            tabs: productTypes,
+          }),
+        );
+
+        setProducts(activeProducts);
+        setTabs(productTypes);
+        setActiveTab((current) => current || productTypes[0] || "");
       } catch (error) {
         console.error("Failed to load products", error);
       } finally {
-        if (!ignore) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     }
 
