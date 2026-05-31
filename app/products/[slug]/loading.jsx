@@ -1,4 +1,18 @@
+"use client";
+
+import { useLayoutEffect } from "react";
+
 export default function ProductLoading() {
+  useLayoutEffect(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      });
+    });
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#f7f7f7] px-4 py-5 text-black">
       <div className="mx-auto max-w-7xl">

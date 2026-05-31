@@ -135,15 +135,9 @@ export default function ProductShowcase() {
 
     setOpeningProductId(productId);
 
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "auto",
-    });
-
     window.setTimeout(() => {
       startTransition(() => {
-        router.push(href, { scroll: true });
+        router.push(href);
       });
     }, 90);
   };
@@ -215,7 +209,10 @@ export default function ProductShowcase() {
                       scale: isOpening ? 1.06 : 1,
                       y: isOpening ? -8 : 0,
                       opacity: openingProductId && !isOpening ? 0.45 : 1,
-                      filter: openingProductId && !isOpening ? "blur(4px)" : "blur(0px)",
+                      filter:
+                        openingProductId && !isOpening
+                          ? "blur(4px)"
+                          : "blur(0px)",
                     }}
                     transition={{
                       duration: 0.22,
