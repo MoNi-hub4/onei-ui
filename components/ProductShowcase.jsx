@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
 import { motion, AnimatePresence } from "framer-motion";
 import ProductCard from "./ProductCard";
 
@@ -67,7 +67,7 @@ const mapProductForCard = (product) => ({
 });
 
 export default function ProductShowcase() {
-  const router = useRouter();
+  const router = useTransitionRouter();
   const [isPending, startTransition] = useTransition();
   const [products, setProducts] = useState([]);
   const [tabs, setTabs] = useState([]);
