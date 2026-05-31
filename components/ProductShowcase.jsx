@@ -61,9 +61,7 @@ const getProductHref = (product) =>
 const mapProductForCard = (product) => ({
   ...product,
   colors:
-    product.variants
-      ?.map((variant) => variant.image)
-      .filter(Boolean) || [],
+    product.variants?.map((variant) => variant.image).filter(Boolean) || [],
 });
 
 export default function ProductShowcase() {
@@ -81,20 +79,18 @@ export default function ProductShowcase() {
 
     async function loadProducts() {
       try {
-        const res = await fetch("/api/cms/products", {
-          cache: "no-store",
-        });
+        const res = await fetch("/api/cms/products");
 
         const data = await res.json();
         const activeProducts = (data.products || []).filter(
-          (product) => product.isActive !== false
+          (product) => product.isActive !== false,
         );
 
         const productTypes = [
           ...new Set(
             activeProducts
               .map((product) => product.productType)
-              .filter(Boolean)
+              .filter(Boolean),
           ),
         ];
 
