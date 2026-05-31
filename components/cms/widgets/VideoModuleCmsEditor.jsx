@@ -1,9 +1,27 @@
 "use client";
 
-export default function VideoModuleCmsEditor({ data, setData, onDelete }) {
+export default function VideoModuleCmsEditor({
+  data,
+  setData,
+  onDelete,
+  onBack,
+}) {
   return (
     <div className="p-5">
-      <h2 className="text-lg font-bold mb-5">Video Module Settings</h2>
+      <div className="flex items-center gap-3 mb-5">
+        <button
+          onClick={onBack}
+          className="w-9 h-9 rounded-xl border flex items-center justify-center hover:bg-neutral-100"
+        >
+          ←
+        </button>
+
+        <div>
+          <h2 className="text-lg font-bold">Video Module Settings</h2>
+
+          <p className="text-xs text-neutral-500">Configure widget</p>
+        </div>
+      </div>
 
       <div className="space-y-5">
         <div>
