@@ -1,6 +1,9 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import CmsPage from "@/models/CmsPage";
+
 
 export async function GET() {
   await connectDB();

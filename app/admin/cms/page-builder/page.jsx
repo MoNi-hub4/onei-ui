@@ -53,6 +53,8 @@ export default function PageBuilder() {
       data: {
         videoUrl: "/hero-video.mp4",
         posterUrl: "/video-poster.jpg",
+        spacingTop: 0,
+        spacingBottom: 0,
       },
     };
 
@@ -61,16 +63,14 @@ export default function PageBuilder() {
   };
 
   const selectedWidgetData = widgets.find(
-    (widget) => widget.id === selectedWidget
+    (widget) => widget.id === selectedWidget,
   );
 
   const updateSelectedWidgetData = (newData) => {
     setWidgets(
       widgets.map((widget) =>
-        widget.id === selectedWidget
-          ? { ...widget, data: newData }
-          : widget
-      )
+        widget.id === selectedWidget ? { ...widget, data: newData } : widget,
+      ),
     );
   };
 
@@ -102,9 +102,7 @@ export default function PageBuilder() {
   };
 
   const deleteSelectedWidget = () => {
-    setWidgets(
-      widgets.filter((widget) => widget.id !== selectedWidget)
-    );
+    setWidgets(widgets.filter((widget) => widget.id !== selectedWidget));
 
     setSelectedWidget(null);
   };
@@ -206,9 +204,7 @@ export default function PageBuilder() {
         <main className="overflow-y-auto p-6">
           <div
             className={`mx-auto transition-all duration-300 ${
-              previewMode === "mobile"
-                ? "w-[414px]"
-                : "max-w-5xl w-full"
+              previewMode === "mobile" ? "w-[414px]" : "max-w-5xl w-full"
             }`}
           >
             <div
@@ -242,12 +238,7 @@ export default function PageBuilder() {
                 ) : (
                   widgets.map((widget) => {
                     if (widget.type === "video-module") {
-                      return (
-                        <VideoModule
-                          key={widget.id}
-                          data={widget.data}
-                        />
-                      );
+                      return <VideoModule key={widget.id} data={widget.data} />;
                     }
 
                     return null;
@@ -261,9 +252,7 @@ export default function PageBuilder() {
         <aside className="bg-white border-l overflow-y-auto">
           {!selectedWidgetData ? (
             <div className="p-5">
-              <h2 className="font-semibold mb-5">
-                Available Widgets
-              </h2>
+              <h2 className="font-semibold mb-5">Available Widgets</h2>
 
               <button
                 onClick={addVideoModule}

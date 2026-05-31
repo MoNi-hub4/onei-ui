@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 import { Menu, Search, ShoppingBag } from "lucide-react";
@@ -9,7 +10,6 @@ import VideoModule from "@/components/VideoModule";
 import CategoryGrid from "@/components/CategoryGrid";
 import ProductShowcase from "@/components/ProductShowcase";
 import CmsBottomClient from "@/components/cms/CmsBottomClient";
-export const dynamic = "force-dynamic";
 
 
 export default function Home() {

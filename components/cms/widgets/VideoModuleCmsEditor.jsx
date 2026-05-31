@@ -38,6 +38,37 @@ export default function VideoModuleCmsEditor({ data, setData, onDelete }) {
           />
         </div>
       </div>
+      <div>
+        <label className="text-sm font-medium">Top Spacing (px)</label>
+
+        <input
+          type="number"
+          value={data.spacingTop || 0}
+          onChange={(e) =>
+            setData({
+              ...data,
+              spacingTop: Number(e.target.value),
+            })
+          }
+          className="mt-2 w-full h-11 rounded-xl border px-4 outline-none"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium">Bottom Spacing (px)</label>
+
+        <input
+          type="number"
+          value={data.spacingBottom || 0}
+          onChange={(e) =>
+            setData({
+              ...data,
+              spacingBottom: Number(e.target.value),
+            })
+          }
+          className="mt-2 w-full h-11 rounded-xl border px-4 outline-none"
+        />
+      </div>
       <div className="pt-6 border-t mt-6">
         <button
           onClick={onDelete}
