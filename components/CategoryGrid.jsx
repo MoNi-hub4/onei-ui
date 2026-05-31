@@ -3,27 +3,27 @@
 const categories = [
   {
     title: "Apple",
-    image: "/categories/apple.png",
+    image: "/categories/apple.webp",
   },
   {
     title: "Sounds",
-    image: "/categories/sounds.png",
+    image: "/categories/sounds.webp",
   },
   {
     title: "Dyson",
-    image: "/categories/dyson.png",
+    image: "/categories/dyson.webp",
   },
   {
     title: "Android",
-    image: "/categories/android.png",
+    image: "/categories/android.webp",
   },
   {
     title: "Gaming",
-    image: "/categories/gaming.png",
+    image: "/categories/gaming.webp",
   },
   {
     title: "Gadgets",
-    image: "/categories/gadgets.png",
+    image: "/categories/gadgets.webp",
   },
 ];
 
