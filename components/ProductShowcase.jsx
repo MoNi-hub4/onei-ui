@@ -164,7 +164,7 @@ export default function ProductShowcase() {
 
   const sectionTitle = useMemo(() => {
     const firstProduct = products.find(Boolean);
-    return firstProduct?.category || "Products";
+    return firstProduct?.brand || "Products";
   }, [products]);
 
   const handleProductClick = (event, product) => {
