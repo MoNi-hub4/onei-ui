@@ -17,7 +17,7 @@ export async function GET() {
     await connectDB();
 
     const products = await Product.find()
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .lean();
 
     return NextResponse.json({

@@ -117,9 +117,13 @@ export default function ProductShowcase() {
           throw new Error(data.message || "Failed to load products");
         }
 
-        const activeProducts = (data.products || []).filter(
-          (product) => product.isActive !== false,
-        );
+        const activeProducts = (data.products || [])
+          .filter((product) => product.isActive !== false)
+          .sort((a, b) => {
+            const aTime = new Date(a.createdAt || 0).getTime();
+            const bTime = new Date(b.createdAt || 0).getTime();
+            return aTime - bTime; // newest first
+          });
 
         const productTypes = [
           ...new Set(
