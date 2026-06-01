@@ -91,7 +91,7 @@ export default function ProductShowcase() {
           return;
         }
 
-        const res = await fetch("/api/cms/products");
+        const res = await fetch("/api/products/showcase");
         const data = await res.json();
 
         const activeProducts = (data.products || []).filter(
