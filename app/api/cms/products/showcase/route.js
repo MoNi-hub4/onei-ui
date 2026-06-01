@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
@@ -11,7 +11,9 @@ export async function GET() {
     const products = await Product.find({
       isActive: { $ne: false },
     })
-      .select("name slug price image variants category productType isActive")
+      .select(
+        "name slug price image variants category productType brand stockStatus isActive createdAt"
+      )
       .sort({ createdAt: -1 })
       .lean();
 
@@ -22,15 +24,18 @@ export async function GET() {
       },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600",
+          "Cache-Control":
+            "public, s-maxage=300, stale-while-revalidate=3600",
         },
       }
     );
   } catch (error) {
+    console.error("Showcase products API failed:", error);
+
     return NextResponse.json(
       {
         success: false,
-        message: error.message,
+        message: error.message || "Failed to load showcase products",
         products: [],
       },
       { status: 500 }

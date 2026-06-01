@@ -84,15 +84,38 @@ export default function ProductShowcase() {
         if (cached) {
           const parsed = JSON.parse(cached);
 
-          setProducts(parsed.products || []);
-          setTabs(parsed.tabs || []);
-          setActiveTab((current) => current || parsed.tabs?.[0] || "");
-          setLoading(false);
+          if (!ignore) {
+            setProducts(parsed.products || []);
+            setTabs(parsed.tabs || []);
+            setActiveTab((current) => current || parsed.tabs?.[0] || "");
+            setLoading(false);
+          }
+
           return;
         }
 
-        const res = await fetch("/api/products/showcase");
-        const data = await res.json();
+        const res = await fetch("/api/cms/products", {
+          cache: "no-store",
+        });
+
+        const contentType = res.headers.get("content-type") || "";
+        const text = await res.text();
+
+        if (!contentType.includes("application/json")) {
+          console.error("Products API did not return JSON:", {
+            status: res.status,
+            url: res.url,
+            bodyPreview: text.slice(0, 300),
+          });
+
+          throw new Error("Products API returned HTML instead of JSON");
+        }
+
+        const data = JSON.parse(text);
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.message || "Failed to load products");
+        }
 
         const activeProducts = (data.products || []).filter(
           (product) => product.isActive !== false,
@@ -114,13 +137,17 @@ export default function ProductShowcase() {
           }),
         );
 
-        setProducts(activeProducts);
-        setTabs(productTypes);
-        setActiveTab((current) => current || productTypes[0] || "");
+        if (!ignore) {
+          setProducts(activeProducts);
+          setTabs(productTypes);
+          setActiveTab((current) => current || productTypes[0] || "");
+        }
       } catch (error) {
         console.error("Failed to load products", error);
       } finally {
-        setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     }
 
